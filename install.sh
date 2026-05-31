@@ -32,12 +32,9 @@ chmod +x "$TMP"
 mv "$TMP" "$BIN"
 
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
-    EXPORT_LINE="export PATH=\"\$HOME/.local/bin:\$PATH\""
-    FISH_LINE "set -gx PATH \$HOME/.local/bin \$PATH"
-
     for RC in "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.zshrc" "$HOME/.profile"; do
         if [ -f "$RC" ] && ! grep -q ".local/bin" "$RC"; then
-            echo "$EXPORT_LINE" >> "$RC"
+            echo "export PATH=\"\$HOME/.local/bin:\$PATH\"" >> "$RC"
             echo "  Added to PATH in $RC"
         fi
     done
