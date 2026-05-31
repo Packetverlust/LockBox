@@ -40,7 +40,8 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     done
 
     FISH_CONFIG="$HOME/.config/fish/config.fish"
-    if [ -f "$FISH_CONFIG" ] && ! grep -q ".local/bin" "$FISH_CONFIG"; then
+    mkdir -p "$(dirname "$FISH_CONFIG")"
+    if ! grep -q ".local/bin" "$FISH_CONFIG" 2>/dev/null; then
         echo "set -gx PATH \$HOME/.local/bin \$PATH" >> "$FISH_CONFIG"
         echo "  Added to PATH in $FISH_CONFIG"
     fi
