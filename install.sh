@@ -32,12 +32,27 @@ chmod +x "$TMP"
 mv "$TMP" "$BIN"
 
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
-    echo ""
-    echo "  Add this to your ~/.bashrc or ~/.zshrc:"
-    echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
+    EXPORT_LINE="export PATH=\"\$HOME/.local/bin:\$PATH\""
+    FISH_LINE "set -gx PATH \$HOME/.local/bin \$PATH"
+
+    for RC in "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.zshrc" "$HOME/.profile"; do
+        if [ -f "$RC" ] && ! grep -q ".local/bin" "$RC"; then
+            echo "$EXPORT_LINE" >> "$RC"
+            echo "  Added to PATH in $RC"
+        fi
+    done
+
+    FISH_CONFIG="$HOME/.config/fish/config.fish"
+    if [ -f "$FISH_CONFIG" ] && ! grep -q ".local/bin" "$FISH_CONFIG"; then
+        echo "set -gx PATH \$HOME/.local/bin \$PATH" >> "$FISH_CONFIG"
+        echo "  Added to PATH in $FISH_CONFIG"
+    fi
+
+    export PATH="$INSTALL_DIR:$PATH"
 fi
 
 echo ""
 echo "  LockBox $VERSION installed to $BIN"
 echo "  Run: lockbox --help"
+echo "  (If 'lockbox' is not found, restart your terminal)"
 echo ""
